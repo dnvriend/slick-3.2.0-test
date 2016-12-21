@@ -61,6 +61,10 @@ class TestSpec extends FlatSpec
   implicit val ec: ExecutionContext = getComponent[ExecutionContext]
   implicit val mat: Materializer = getComponent[Materializer]
   val personRepository: PersonRepository = getComponent[PersonRepository]
+  val coffeeRepository: CoffeeRepository = getComponent[CoffeeRepository]
+  val userRepository: UserRepository = getComponent[UserRepository]
+  val akkaPersistenceRepository: AkkaPersistenceRepository = getComponent[AkkaPersistenceRepository]
+
   val db = personRepository.database
   val profile = personRepository.getProfile
 
@@ -90,7 +94,10 @@ class TestSpec extends FlatSpec
   override protected def beforeEach(): Unit = {
     Future.sequence(
       List(
-        personRepository.initialize
+        //        akkaPersistenceRepository.initialize,
+        coffeeRepository.initialize,
+        personRepository.initialize,
+        userRepository.initialize
       )
     ).toTry recover {
         case t: Throwable =>

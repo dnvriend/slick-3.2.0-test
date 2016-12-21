@@ -1,5 +1,5 @@
 
-lazy val slick3Test = (project in file("slick3-test"))
+lazy val slick3Test = (project in file("."))
   .enablePlugins(PlayScala)
   .disablePlugins(PlayLayoutPlugin)
   .dependsOn(playSlick)

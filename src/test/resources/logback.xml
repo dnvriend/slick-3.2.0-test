@@ -8,11 +8,11 @@
         </encoder>
     </appender>
     <!--<logger name="akka" level="info"/>-->
-    <logger name="slick.backend.DatabaseComponent.action" level="debug"/>
-    <logger name="com.zaxxer.hikari.pool.HikariPool" level="debug"/>
-    <logger name="org.jdbcdslog.ConnectionLogger" level="debug"/>
-    <logger name="org.jdbcdslog.StatementLogger" level="debug"/>
-    <logger name="org.jdbcdslog.ResultSetLogger" level="debug"/>
+    <!--<logger name="slick.backend.DatabaseComponent.action" level="debug"/>-->
+    <!--<logger name="com.zaxxer.hikari.pool.HikariPool" level="debug"/>-->
+    <!--<logger name="org.jdbcdslog.ConnectionLogger" level="debug"/>-->
+    <!--<logger name="org.jdbcdslog.StatementLogger" level="debug"/>-->
+    <!--<logger name="org.jdbcdslog.ResultSetLogger" level="debug"/>-->
     <logger name="com.github.dnvriend" level="debug"/>
     <root level="error">
         <appender-ref ref="console"/>

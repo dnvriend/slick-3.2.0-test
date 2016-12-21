@@ -1,4 +1,4 @@
-package com.github.dnvriend.tests
+package com.github.dnvriend.slicktest
 
 import com.github.dnvriend.TestSpec
 

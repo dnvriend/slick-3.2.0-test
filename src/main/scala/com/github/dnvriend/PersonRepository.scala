@@ -48,10 +48,7 @@ class PersonRepository @Inject() (protected val dbConfigProvider: DatabaseConfig
       }
   }
 
-  /**
-   * Initializes the database; creates the schema and inserts persons
-   */
-  def initialize: Future[Unit] = {
+  def createEntries: Future[Unit] = {
     val setup: DBIOAction[Unit, NoStream, Effect.Write with Effect.Transactional] = DBIO.seq(
       // Insert some persons
       PersonTable ++= Seq(
@@ -65,6 +62,14 @@ class PersonRepository @Inject() (protected val dbConfigProvider: DatabaseConfig
         PersonTableRow("Kate Mulgrew", "1955-04-29".date)
       )
     ).transactionally
-    dropCreateSchema.flatMap(_ => db.run(setup))
+    db.run(setup)
   }
+
+  /**
+   * Initializes the database; creates the schema and inserts persons
+   */
+  def initialize: Future[Unit] = for {
+    _ <- dropCreateSchema
+    _ <- createEntries
+  } yield ()
 }
