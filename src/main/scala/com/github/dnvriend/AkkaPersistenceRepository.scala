@@ -29,7 +29,7 @@ class AkkaPersistenceRepository @Inject() (protected val dbConfigProvider: Datab
     val sequenceNumber: Rep[Long] = column[Long]("sequence_nr")
     val deleted: Rep[Boolean] = column[Boolean]("deleted", O.Default(false))
     val tags: Rep[Option[String]] = column[Option[String]]("tags", O.Length(255, varying = true))
-    val message: Rep[Array[Byte]] = column[Array[Byte]]("message")
+    val message = column[Array[Byte]]("message")
     val pk: PrimaryKey = primaryKey("journal_pk", (persistenceId, sequenceNumber))
   }
 
