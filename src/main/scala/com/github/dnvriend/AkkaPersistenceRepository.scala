@@ -1,13 +1,13 @@
 package com.github.dnvriend
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 
-import com.github.dnvriend.AkkaPersistenceRepository.{JournalRow, SnapshotRow}
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.jdbc.{JdbcBackend, JdbcProfile}
-import slick.lifted.{PrimaryKey, ProvenShape}
+import com.github.dnvriend.AkkaPersistenceRepository.{ JournalRow, SnapshotRow }
+import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
+import slick.jdbc.{ JdbcBackend, JdbcProfile }
+import slick.lifted.{ PrimaryKey, ProvenShape }
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 object AkkaPersistenceRepository {
   final case class JournalRow(ordering: Long, deleted: Boolean, persistenceId: String, sequenceNumber: Long, message: Array[Byte], tags: Option[String] = None)

@@ -16,15 +16,15 @@
 
 package com.github.dnvriend
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 
-import com.github.dnvriend.CoffeeRepository.{CoffeeTableRow, SupplierTableRow}
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import com.github.dnvriend.CoffeeRepository.{ CoffeeTableRow, SupplierTableRow }
+import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
 import slick.basic.DatabasePublisher
-import slick.jdbc.{GetResult, JdbcBackend, JdbcProfile}
-import slick.lifted.{ForeignKeyQuery, ProvenShape}
+import slick.jdbc.{ GetResult, JdbcBackend, JdbcProfile }
+import slick.lifted.{ ForeignKeyQuery, ProvenShape }
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 object CoffeeRepository {
   final case class SupplierTableRow(id: Int, name: String, street: String, city: String, state: String, zip: String)

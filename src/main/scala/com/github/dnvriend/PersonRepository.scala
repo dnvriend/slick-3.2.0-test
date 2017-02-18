@@ -1,16 +1,16 @@
 package com.github.dnvriend
 
-import java.sql.{Date, Timestamp}
+import java.sql.{ Date, Timestamp }
 import java.text.SimpleDateFormat
 import java.util.UUID
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 
 import com.github.dnvriend.PersonRepository.PersonTableRow
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.jdbc.{JdbcBackend, JdbcProfile}
+import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
+import slick.jdbc.{ JdbcBackend, JdbcProfile }
 import slick.lifted.ProvenShape
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 object PersonRepository {
   final case class PersonTableRow(name: String, dateOfBirth: Date, created: Timestamp = new Timestamp(System.currentTimeMillis()), id: String = UUID.randomUUID.toString)

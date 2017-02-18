@@ -16,14 +16,14 @@
 
 package com.github.dnvriend
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 
 import com.github.dnvriend.UserRepository.UserTableRow
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.jdbc.{JdbcBackend, JdbcProfile}
+import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
+import slick.jdbc.{ JdbcBackend, JdbcProfile }
 import slick.lifted.ProvenShape
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 object UserRepository {
   final case class UserTableRow(id: Option[Int], first: String, last: String)
