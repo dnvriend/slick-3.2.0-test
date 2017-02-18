@@ -1,15 +1,16 @@
 package com.github.dnvriend
 
-import java.sql.{ Date, Timestamp }
+import java.sql.{Date, Timestamp}
 import java.text.SimpleDateFormat
 import java.util.UUID
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 
 import com.github.dnvriend.PersonRepository.PersonTableRow
-import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
-import slick.jdbc.JdbcProfile
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.jdbc.{JdbcBackend, JdbcProfile}
+import slick.lifted.ProvenShape
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 object PersonRepository {
   final case class PersonTableRow(name: String, dateOfBirth: Date, created: Timestamp = new Timestamp(System.currentTimeMillis()), id: String = UUID.randomUUID.toString)
@@ -19,8 +20,8 @@ object PersonRepository {
 class PersonRepository @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
   import profile.api._
 
-  def getProfile = profile
-  def database = db
+  def getProfile: JdbcProfile = profile
+  def database: JdbcBackend#DatabaseDef = db
 
   implicit class DateString(dateString: String) {
     def date: java.sql.Date = {
@@ -30,11 +31,11 @@ class PersonRepository @Inject() (protected val dbConfigProvider: DatabaseConfig
   }
 
   class PersonTable(tag: Tag) extends Table[PersonTableRow](tag, "PERSONS") {
-    def * = (name, dateOfBirth, created, id) <> (PersonTableRow.tupled, PersonTableRow.unapply)
-    def id = column[String]("ID", O.PrimaryKey)
-    def name = column[String]("NAME")
-    def dateOfBirth = column[Date]("DATE_OF_BIRTH")
-    def created = column[Timestamp]("CREATED")
+    def * : ProvenShape[PersonTableRow] = (name, dateOfBirth, created, id) <> (PersonTableRow.tupled, PersonTableRow.unapply)
+    def id: Rep[String] = column[String]("ID", O.PrimaryKey)
+    def name: Rep[String] = column[String]("NAME")
+    def dateOfBirth: Rep[Date] = column[Date]("DATE_OF_BIRTH")
+    def created: Rep[Timestamp] = column[Timestamp]("CREATED")
   }
 
   lazy val PersonTable = new TableQuery(tag => new PersonTable(tag))

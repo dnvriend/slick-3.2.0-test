@@ -16,15 +16,15 @@
 
 package com.github.dnvriend
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 
-import com.github.dnvriend.CoffeeRepository.{ CoffeeTableRow, SupplierTableRow }
-import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
+import com.github.dnvriend.CoffeeRepository.{CoffeeTableRow, SupplierTableRow}
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.basic.DatabasePublisher
-import slick.jdbc.JdbcProfile
-import slick.jdbc.GetResult
+import slick.jdbc.{GetResult, JdbcBackend, JdbcProfile}
+import slick.lifted.{ForeignKeyQuery, ProvenShape}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 object CoffeeRepository {
   final case class SupplierTableRow(id: Int, name: String, street: String, city: String, state: String, zip: String)
@@ -41,18 +41,18 @@ object CoffeeRepository {
 class CoffeeRepository @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
   import profile.api._
 
-  def getProfile = profile
-  def database = db
+  def getProfile: JdbcProfile = profile
+  def database: JdbcBackend#DatabaseDef = db
 
   class SupplierTable(tag: Tag) extends Table[SupplierTableRow](tag, "SUPPLIERS") {
     // Every table needs a * projection with the same type as the table's type parameter
-    def * = (id, name, street, city, state, zip) <> (SupplierTableRow.tupled, SupplierTableRow.unapply)
-    def id = column[Int]("SUP_ID", O.PrimaryKey) // This is the primary key column
-    def name = column[String]("SUP_NAME")
-    def street = column[String]("STREET")
-    def city = column[String]("CITY")
-    def state = column[String]("STATE")
-    def zip = column[String]("ZIP")
+    def * : ProvenShape[SupplierTableRow] = (id, name, street, city, state, zip) <> (SupplierTableRow.tupled, SupplierTableRow.unapply)
+    def id: Rep[Int] = column[Int]("SUP_ID", O.PrimaryKey) // This is the primary key column
+    def name: Rep[String] = column[String]("SUP_NAME")
+    def street: Rep[String] = column[String]("STREET")
+    def city: Rep[String] = column[String]("CITY")
+    def state: Rep[String] = column[String]("STATE")
+    def zip: Rep[String] = column[String]("ZIP")
   }
 
   lazy val SupplierTable = new TableQuery(tag => new SupplierTable(tag))
@@ -62,13 +62,13 @@ class CoffeeRepository @Inject() (protected val dbConfigProvider: DatabaseConfig
   // Definition of the COFFEES table
   class CoffeeTable(tag: Tag) extends Table[CoffeeTableRow](tag, "COFFEES") {
     // A reified foreign key relation that can be navigated to create a join
-    def * = (name, supID, price, sales, total) <> (CoffeeTableRow.tupled, CoffeeTableRow.unapply)
-    def name = column[String]("COF_NAME", O.PrimaryKey)
-    def supID = column[Int]("SUP_ID")
-    def price = column[Double]("PRICE")
-    def sales = column[Int]("SALES")
-    def total = column[Int]("TOTAL")
-    def supplier = foreignKey("SUP_FK", supID, SupplierTable)(_.id)
+    def * : ProvenShape[CoffeeTableRow] = (name, supID, price, sales, total) <> (CoffeeTableRow.tupled, CoffeeTableRow.unapply)
+    def name: Rep[String] = column[String]("COF_NAME", O.PrimaryKey)
+    def supID: Rep[Int] = column[Int]("SUP_ID")
+    def price: Rep[Double] = column[Double]("PRICE")
+    def sales: Rep[Int] = column[Int]("SALES")
+    def total: Rep[Int] = column[Int]("TOTAL")
+    def supplier: ForeignKeyQuery[SupplierTable, SupplierTableRow] = foreignKey("SUP_FK", supID, SupplierTable)(_.id)
   }
 
   lazy val CoffeeTable = new TableQuery(tag => new CoffeeTable(tag))
@@ -127,7 +127,7 @@ class CoffeeRepository @Inject() (protected val dbConfigProvider: DatabaseConfig
   def coffee(name: String): Future[Seq[CoffeeTableRow]] =
     db.run(CoffeeTable.filter(_.name === name).result)
 
-  def listCoffees(limit: Long, offset: Long = Long.MaxValue) =
+  def listCoffees(limit: Long, offset: Long = Long.MaxValue): Future[Seq[CoffeeTableRow]] =
     // select * from coffees limit $limit offset $offset
     db.run(CoffeeTable.drop(offset).take(limit).result)
 }

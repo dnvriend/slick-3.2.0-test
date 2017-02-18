@@ -1,14 +1,13 @@
 package com.github.dnvriend
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 
-import com.github.dnvriend.AkkaPersistenceRepository.{ JournalRow, SnapshotRow }
-import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
-import slick.jdbc.JdbcProfile
-import slick.jdbc.meta.MTable
-import slick.lifted.{ PrimaryKey, ProvenShape }
+import com.github.dnvriend.AkkaPersistenceRepository.{JournalRow, SnapshotRow}
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.jdbc.{JdbcBackend, JdbcProfile}
+import slick.lifted.{PrimaryKey, ProvenShape}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 object AkkaPersistenceRepository {
   final case class JournalRow(ordering: Long, deleted: Boolean, persistenceId: String, sequenceNumber: Long, message: Array[Byte], tags: Option[String] = None)
@@ -18,8 +17,8 @@ object AkkaPersistenceRepository {
 @Singleton
 class AkkaPersistenceRepository @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
   import profile.api._
-  def getProfile = profile
-  def database = db
+  def getProfile: JdbcProfile = profile
+  def database: JdbcBackend#DatabaseDef = db
 
   class Journal(tag: Tag) extends Table[JournalRow](tag, "JDBC_JOURNAL") {
     def * : ProvenShape[JournalRow] = (ordering, deleted, persistenceId, sequenceNumber, message, tags) <> (JournalRow.tupled, JournalRow.unapply)

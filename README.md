@@ -1,10 +1,26 @@
 # slick-3.2.0-test
-A small test project to test Slick 3.2.0 Milestone and Release Candidate releases
+A small test project to test [Slick 3.2.0 Release Candidate](http://slick.lightbend.com/news/2017/02/10/slick-3.2.0-RC1-released.html)
 
-## Concepts
+## Tables, Queries, Actions, Joins and Profiles
+Slick isn't that difficult to use but we need to know some concepts so we know how to configure it.
 
 ### Tables
-A way of defining a relationship between the Scala datatypes and the database.
+Tables is how Slick defines a relationship between the Scala datatypes and the database. We need two things, a Scala datatype that we use in our application and a table where to store the data. For example:
+
+```scala
+case class Album(artist: String, title: String, id: Long = 0)
+
+class AlbumTable(tag: Tag) extends Table[Album](tag, "album") {
+	def artist = column[String]("artist")
+	def title = column[String]("title")
+	def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+
+    // the default projection of the table
+	def * (artist, title, id) <> (Album.tupled, Album.unapply)
+}
+
+lazy val AlbumTable = TableQuery[AlbumTable]
+```
 
 ### Queries
 A DSL for building SQL

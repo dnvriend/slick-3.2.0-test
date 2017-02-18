@@ -16,13 +16,14 @@
 
 package com.github.dnvriend
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 
 import com.github.dnvriend.UserRepository.UserTableRow
-import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
-import slick.jdbc.JdbcProfile
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.jdbc.{JdbcBackend, JdbcProfile}
+import slick.lifted.ProvenShape
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 object UserRepository {
   final case class UserTableRow(id: Option[Int], first: String, last: String)
@@ -32,14 +33,14 @@ object UserRepository {
 class UserRepository @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
   import profile.api._
 
-  def getProfile = profile
-  def database = db
+  def getProfile: JdbcProfile = profile
+  def database: JdbcBackend#DatabaseDef = db
 
   class UserTable(tag: Tag) extends Table[UserTableRow](tag, "users") {
-    def * = (id.?, first, last) <> (UserTableRow.tupled, UserTableRow.unapply)
-    def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-    def first = column[String]("first")
-    def last = column[String]("last")
+    def * : ProvenShape[UserTableRow] = (id.?, first, last) <> (UserTableRow.tupled, UserTableRow.unapply)
+    def id: Rep[Int] = column[Int]("id", O.PrimaryKey, O.AutoInc)
+    def first: Rep[String] = column[String]("first")
+    def last: Rep[String] = column[String]("last")
   }
 
   lazy val UserTable = new TableQuery(tag => new UserTable(tag))
