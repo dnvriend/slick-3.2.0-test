@@ -13,7 +13,7 @@ class OracleSnapshotQueriesTest extends TestSpec {
   def insertSnapshotStatement(snapshotRow: SnapshotRow): String =
     SnapshotTable.insertOrUpdate(snapshotRow).statements.head
 
-  def selectAll(persistenceId: String): Query[Snapshot, SnapshotRow, Seq] =
+  def selectAll(persistenceId: String) =
     SnapshotTable.filter(_.persistenceId === persistenceId).sortBy(_.sequenceNumber.desc)
 
   "DDL" should "generate create table statement" in {

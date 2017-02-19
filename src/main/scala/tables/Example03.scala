@@ -9,34 +9,15 @@ import scala.concurrent._
 import scala.concurrent.duration._
 
 /**
- * Store Album types in the database based on a normal class
- * so here we have to create our own tupled method for reading data.
+ * Custom Data Type in an individual column
  *
- * When reading data, slick will use the default projection to convert
- * tuples => classes and when writing data, slick will use the default
- * projection to convert classes => tuples so we need to provide these
- * two functions.
- *
- * runMain tables.Example02
+ * runMain tables.Example03
  */
-object Example02 extends App {
+object Example03 extends App {
 
   // Tables -- mappings between scala types and database tables
 
-  object Album {
-    def apply(artist: String, title: String, year: Int, id: Long = 0): Album =
-      new Album(artist, title, year, id)
-
-    def createAlbum(p: (String, String, Int, Long)): Album = p match {
-      case (artist, title, year, id) => Album(artist, title, year, id)
-    }
-    def extractAlbum(album: Album): Option[(String, String, Int, Long)] =
-      Option((album.artist, album.title, album.year, album.id))
-  }
-
-  class Album(val artist: String, val title: String, val year: Int, val id: Long = 0) {
-    override def toString: String = s"""{"artist":"$artist","title":"$title","year":$year,"id":$id}"""
-  }
+  case class Album(artist: String, title: String, year: Int, id: Long = 0)
 
   // A standard Slick table type representing an SQL table type to store instances
   // of type Album.
@@ -54,7 +35,7 @@ object Example02 extends App {
     // this is the default projection for the table. It tells us how to convert between a
     // tuple of these columns of the database and the Album datatype that we want to map
     // using this table.
-    def * : ProvenShape[Album] = (artist, title, year, id).<>(Album.createAlbum, Album.extractAlbum)
+    def * : ProvenShape[Album] = (artist, title, year, id) <> (Album.tupled, Album.unapply)
   }
 
   lazy val AlbumTable = TableQuery[AlbumTable]

@@ -22,6 +22,11 @@ class AlbumTable(tag: Tag) extends Table[Album](tag, "album") {
 lazy val AlbumTable = TableQuery[AlbumTable]
 ```
 
+## Custom Column Mapping
+ColumnType typeclass
+
+
+
 ### Queries
 A DSL for building SQL
 

@@ -4,11 +4,15 @@ import slick.dbio.Effect.{ Read, Schema, Write }
 
 import scala.concurrent._
 import scala.concurrent.duration._
-import slick.jdbc.H2Profile.api._
+import slick.jdbc.PostgresProfile.api._
 import slick.lifted.{ ProvenShape, TableQuery }
 import slick.sql.{ FixedSqlAction, FixedSqlStreamingAction }
 
-// runMain tables.Example01
+/**
+ * Store Album types in the database based on a case class
+ *
+ * runMain tables.Example01
+ */
 object Example01 extends App {
 
   // Tables -- mappings between scala types and database tables

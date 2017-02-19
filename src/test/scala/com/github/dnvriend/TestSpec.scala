@@ -68,6 +68,8 @@ class TestSpec extends FlatSpec
   val db = personRepository.database
   val profile = personRepository.getProfile
 
+  println(s"====> Database Profile = $profile")
+
   // ================================== Supporting Operations ====================================
   implicit class PimpedByteArray(self: Array[Byte]) {
     def getString: String = new String(self)

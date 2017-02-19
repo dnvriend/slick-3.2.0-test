@@ -20,7 +20,7 @@ class AkkaPersistenceRepository @Inject() (protected val dbConfigProvider: Datab
   def getProfile: JdbcProfile = profile
   def database: JdbcBackend#DatabaseDef = db
 
-  class Journal(tag: Tag) extends Table[JournalRow](tag, "JDBC_JOURNAL") {
+  class JournalTable(tag: Tag) extends Table[JournalRow](tag, "JDBC_JOURNAL") {
     def * : ProvenShape[JournalRow] = (ordering, deleted, persistenceId, sequenceNumber, message, tags) <> (JournalRow.tupled, JournalRow.unapply)
 
     val ordering: Rep[Long] = column[Long]("ordering", O.AutoInc)
@@ -32,9 +32,9 @@ class AkkaPersistenceRepository @Inject() (protected val dbConfigProvider: Datab
     val pk: PrimaryKey = primaryKey("journal_pk", (persistenceId, sequenceNumber))
   }
 
-  lazy val JournalTable = new TableQuery(tag => new Journal(tag))
+  lazy val JournalTable = TableQuery[JournalTable]
 
-  class Snapshot(tag: Tag) extends Table[SnapshotRow](tag, "JDBC_SNAPSHOTS") {
+  class SnapshotTable(tag: Tag) extends Table[SnapshotRow](tag, "JDBC_SNAPSHOTS") {
     def * : ProvenShape[SnapshotRow] = (persistenceId, sequenceNumber, created, snapshot) <> (SnapshotRow.tupled, SnapshotRow.unapply)
 
     val persistenceId: Rep[String] = column[String]("persistence_id", O.Length(255, varying = true))
@@ -44,7 +44,7 @@ class AkkaPersistenceRepository @Inject() (protected val dbConfigProvider: Datab
     val pk: PrimaryKey = primaryKey("snapshot_pk", (persistenceId, sequenceNumber))
   }
 
-  lazy val SnapshotTable = new TableQuery(tag => new Snapshot(tag))
+  lazy val SnapshotTable = TableQuery[SnapshotTable]
 
   def dropCreateSchema: Future[Unit] = {
     val schema = JournalTable.schema ++ SnapshotTable.schema
