@@ -2,7 +2,6 @@ package com.github.dnvriend.journal
 
 import com.github.dnvriend.TestSpec
 import slick.jdbc.JdbcProfile
-import pprint.Config.Colors._
 
 abstract class JournalDDLTest(val p: JdbcProfile) extends TestSpec {
   import akkaPersistenceRepository._
@@ -11,7 +10,7 @@ abstract class JournalDDLTest(val p: JdbcProfile) extends TestSpec {
   "DDL" should "generate create table statement" in {
 
     val ddl = JournalTable.schema.createStatements.toList
-    pprint.pprintln(ddl)
+    println(ddl)
   }
 }
 
